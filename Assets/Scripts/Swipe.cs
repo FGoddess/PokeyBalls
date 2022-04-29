@@ -16,17 +16,15 @@ public class Swipe : MonoBehaviour, IEndDragHandler, IDragHandler, IPointerDownH
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        _pole.Activate();
-        _pole.transform.position = new Vector3(_pole.transform.position.x, _ball.transform.position.y, _pole.transform.position.z);
-
         _maxY = _ball.transform.position.y;
         _minY = _maxY - _minDifference;
+
         _ball.TryFix();
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-        if (Mathf.Abs(eventData.delta.y) > Mathf.Abs(eventData.delta.x))
+        if (Mathf.Abs(eventData.delta.y) > Mathf.Abs(eventData.delta.x) && _ball.IsFixed)
         {
             var pos = _ball.transform.position;
             var poleDelta = _pole.Curvature;
@@ -41,7 +39,7 @@ public class Swipe : MonoBehaviour, IEndDragHandler, IDragHandler, IPointerDownH
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        _ball.TryThrow();
+        _ball.TryThrow(_pole.Curvature);
         _pole.ResetBend();
     }
 }

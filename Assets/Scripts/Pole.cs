@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(Bend))]
@@ -22,5 +23,16 @@ public class Pole : MonoBehaviour
     {
         gameObject.SetActive(true);
         //TODO: animation
+    }
+
+    public void Hide(float delay)
+    {
+        StartCoroutine(HideAfterDelay(delay));
+    }
+
+    private IEnumerator HideAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        ResetBend();
     }
 }
