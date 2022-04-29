@@ -1,26 +1,16 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class BlocksSpawner : MonoBehaviour
 {
-    [SerializeField] private GameObject _blockTemplate;
-    [SerializeField] private GameObject _halfBlockTemplate;
-    [SerializeField] private GameObject _finishTemplate;
-
-    [SerializeField] private int _towerSize;
-
-    private void Awake()
+    public void Initialize(List<Block> blocks)
     {
         GameObject obj = gameObject;
 
-        for(int i = 0; i < _towerSize; i++)
+        foreach(var block in blocks)
         {
-            obj = CreateSegment(obj, _blockTemplate);
-            obj = CreateSegment(obj, _halfBlockTemplate);
+            obj = CreateSegment(obj, block.gameObject);
         }
-
-        CreateSegment(obj, _finishTemplate);
     }
 
     private GameObject CreateSegment(GameObject currentPoint, GameObject segment)
