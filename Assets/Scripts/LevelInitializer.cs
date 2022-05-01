@@ -11,8 +11,6 @@ public class LevelInitializer : MonoBehaviour
     {
         _spawner.Initialize(_levelConfig.Tower);
 
-        var randIndex = Random.Range(0, _levelConfig.Environment.Count);
-
-        Instantiate(_levelConfig.Environment[randIndex], _environmentContainer);
+        Instantiate(_levelConfig.Environment, _environmentContainer);
     }
 }

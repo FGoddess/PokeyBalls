@@ -22,5 +22,19 @@ public class LevelConfing : ScriptableObject
         }
     }
 
-    public List<GameObject> Environment => _levelEnvironment;
+    public GameObject Environment
+    {
+        get
+        {
+            if (PlayerPrefs.HasKey("EnvironmentId"))
+            {
+                var id = PlayerPrefs.GetInt("EnvironmentId");
+                return _levelEnvironment[id];
+            }
+
+            var randIndex = Random.Range(0, _levelEnvironment.Count);
+            PlayerPrefs.SetInt("EnvironmentId", randIndex);
+            return _levelEnvironment[randIndex];
+        }
+    }
 }
