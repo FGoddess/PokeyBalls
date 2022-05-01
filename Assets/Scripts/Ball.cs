@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 
 [RequireComponent(typeof(Rigidbody))]
 public class Ball : MonoBehaviour
@@ -9,6 +10,8 @@ public class Ball : MonoBehaviour
     private float _jumpForceMultiplier = 1.5f;
 
     private Rigidbody _rigidbody;
+
+    public event Action FinishBlockHitted;
 
     public bool IsFixed => _rigidbody.isKinematic;
 
@@ -21,11 +24,11 @@ public class Ball : MonoBehaviour
     {
         if (Physics.Raycast(transform.position, Vector3.forward, out RaycastHit hit))
         {
+            _pole.Activate();
+            _pole.transform.position = new Vector3(_pole.transform.position.x, transform.position.y, _pole.transform.position.z);
+
             if (hit.collider.TryGetComponent(out Block block))
             {
-                _pole.Activate();
-                _pole.transform.position = new Vector3(_pole.transform.position.x, transform.position.y, _pole.transform.position.z);
-
                 switch (block.BlockType)
                 {
                     case BlockType.Fixable:
@@ -46,18 +49,17 @@ public class Ball : MonoBehaviour
                             break;
                         }
 
-                    case BlockType.Destructable:
-                        {
-                            break;
-                        }
-
                     case BlockType.Finish:
                         {
                             _rigidbody.isKinematic = true;
-                            Debug.Log("EndLevel");
+                            FinishBlockHitted?.Invoke();
                             break;
                         }
                 };
+            }
+            else
+            {
+                _pole.Hide(0.1f);
             }
         }
     }

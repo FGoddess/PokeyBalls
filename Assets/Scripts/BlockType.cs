@@ -2,7 +2,7 @@ public enum BlockType
 {
     Fixable,
     Unfixable,
-    Destructable,
+    Destructible,
     Damagable,
     Finish
 }
