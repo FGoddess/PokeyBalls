@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using System.Collections;
 
 [RequireComponent(typeof(Rigidbody))]
 public class Ball : MonoBehaviour
@@ -8,12 +9,15 @@ public class Ball : MonoBehaviour
     [SerializeField] private float _jumpForce = 5f;
 
     private float _jumpForceMultiplier = 1.5f;
+    private bool _isDead;
 
     private Rigidbody _rigidbody;
 
     public event Action FinishBlockHitted;
+    public event Action Died;
 
     public bool IsFixed => _rigidbody.isKinematic;
+    public bool IsDead => _isDead;
 
     private void Awake()
     {
@@ -46,6 +50,11 @@ public class Ball : MonoBehaviour
                     case BlockType.Damagable:
                         {
                             _pole.Hide(0.1f);
+                            _rigidbody.isKinematic = true;
+
+                            _isDead = true;
+                            Died?.Invoke();
+
                             break;
                         }
 

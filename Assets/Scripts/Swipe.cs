@@ -1,10 +1,13 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+[RequireComponent(typeof(CanvasGroup))]
 public class Swipe : MonoBehaviour, IEndDragHandler, IDragHandler, IPointerDownHandler
 {
     [SerializeField] private Ball _ball;
     [SerializeField] private Pole _pole;
+
+    private CanvasGroup _canvasGroup;
 
     private const float _minDifference = 0.35f;
 
@@ -13,6 +16,26 @@ public class Swipe : MonoBehaviour, IEndDragHandler, IDragHandler, IPointerDownH
 
     private float _bendMultiplier = 10f;
     private float _deltaDivider = 1000f;
+
+    private void Awake()
+    {
+        _canvasGroup = GetComponent<CanvasGroup>();
+    }
+
+    private void OnEnable()
+    {
+        _ball.Died += OnPlayerDeath;
+    }
+
+    private void OnDisable()
+    {
+        _ball.Died -= OnPlayerDeath;
+    }
+
+    private void OnPlayerDeath()
+    {
+        _canvasGroup.blocksRaycasts = false;
+    }
 
     public void OnPointerDown(PointerEventData eventData)
     {
