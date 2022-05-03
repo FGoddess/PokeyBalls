@@ -20,20 +20,18 @@ public class LevelHandler : MonoBehaviour
 
     private void OnEnable()
     {
-        _ball.FinishBlockHitted += OnLevelComplete;
+        _ball.GameWon += OnLevelComplete;
     }
 
     private void OnDisable()
     {
-        _ball.FinishBlockHitted -= OnLevelComplete;
+        _ball.GameWon -= OnLevelComplete;
     }
 
     public void OnLevelComplete()
     {
         _canvasGroup.alpha = 1f;
         _canvasGroup.blocksRaycasts = true;
-
-        SavesManager.Instance.SaveLevelData();
 
         StartCoroutine(LoadNextLevel());
     }
