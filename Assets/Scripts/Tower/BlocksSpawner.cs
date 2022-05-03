@@ -3,6 +3,10 @@ using UnityEngine;
 
 public class BlocksSpawner : MonoBehaviour
 {
+    [SerializeField] private PlayerLevelUI _playerLevelUI;
+
+    private bool _isPlayerLevelInitialized;
+
     public void Initialize(List<Block> blocks)
     {
         GameObject obj = gameObject;
@@ -10,6 +14,12 @@ public class BlocksSpawner : MonoBehaviour
         foreach(var block in blocks)
         {
             obj = CreateSegment(obj, block.gameObject);
+
+            if (block.BlockType == BlockType.Finish && !_isPlayerLevelInitialized)
+            {
+                _playerLevelUI.Initialize(obj.transform);
+                _isPlayerLevelInitialized = true;
+            }
         }
     }
 

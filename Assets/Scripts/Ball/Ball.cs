@@ -1,19 +1,24 @@
-using UnityEngine;
 using System;
-using System.Collections;
+using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(Rigidbody), typeof(MeshRenderer))]
 public class Ball : MonoBehaviour
 {
     [SerializeField] private Pole _pole;
     [SerializeField] private float _jumpForce = 5f;
 
+    [SerializeField] private ParticleSystem _deathParticle;
+
+    private MeshRenderer _meshRenderer;
+
+    private float _poleHideDelay = 0.1f;
     private float _jumpForceMultiplier = 1.5f;
     private bool _isDead;
 
     private Rigidbody _rigidbody;
 
-    public event Action FinishBlockHitted;
+    public event Action GameWon;
+    public event Action<int> FinishBlockHitted;
     public event Action Died;
 
     public bool IsFixed => _rigidbody.isKinematic;
@@ -22,6 +27,7 @@ public class Ball : MonoBehaviour
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
+        _meshRenderer = GetComponent<MeshRenderer>();
     }
 
     public void TryFix()
@@ -43,32 +49,37 @@ public class Ball : MonoBehaviour
 
                     case BlockType.Unfixable:
                         {
-                            _pole.Hide(0.1f);
+                            _pole.Hide(_poleHideDelay);
                             break;
                         }
 
                     case BlockType.Damagable:
                         {
-                            _pole.Hide(0.1f);
-                            _rigidbody.isKinematic = true;
-
-                            _isDead = true;
-                            Died?.Invoke();
-
+                            _pole.Hide(_poleHideDelay);
+                            Die();
                             break;
                         }
 
                     case BlockType.Finish:
                         {
                             _rigidbody.isKinematic = true;
-                            FinishBlockHitted?.Invoke();
+                            GameWon?.Invoke();
+                            
+                            if (block.TryGetComponent(out Finish finish))
+                            {
+                                FinishBlockHitted?.Invoke(finish.GoldForHit);
+                            }
+
+                            AudioPlayer.Instance.PlayWinSFX();
+                            SavesManager.Instance.DeleteEnvironmentKey();
+
                             break;
                         }
                 };
             }
             else
             {
-                _pole.Hide(0.1f);
+                _pole.Hide(_poleHideDelay);
             }
         }
     }
@@ -84,12 +95,15 @@ public class Ball : MonoBehaviour
         _rigidbody.AddTorque(Vector3.right * (_jumpForce + value * _jumpForceMultiplier), ForceMode.Impulse);
     }
 
-    private void OnCollisionEnter(Collision collision)
+    public void Die()
     {
-        if(collision.collider.gameObject.TryGetComponent(out DeathPlatform platform))
-        {
-            _isDead = true;
-            Died?.Invoke();
-        }
+        _deathParticle.Play();
+        AudioPlayer.Instance.PlayDeathSFX();
+        _meshRenderer.enabled = false;
+
+        _rigidbody.isKinematic = true;
+        _isDead = true;
+
+        Died?.Invoke();
     }
 }
