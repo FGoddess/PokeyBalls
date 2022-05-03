@@ -17,6 +17,8 @@ public class Swipe : MonoBehaviour, IEndDragHandler, IDragHandler, IPointerDownH
     private float _bendMultiplier = 10f;
     private float _deltaDivider = 1000f;
 
+    private bool _stopDragging;
+
     private void Awake()
     {
         _canvasGroup = GetComponent<CanvasGroup>();
@@ -24,17 +26,20 @@ public class Swipe : MonoBehaviour, IEndDragHandler, IDragHandler, IPointerDownH
 
     private void OnEnable()
     {
-        _ball.Died += OnPlayerDeath;
+        _ball.Died += DisableCanvasGroup;
+        _ball.FinishBlockHitted += DisableCanvasGroup;
     }
 
     private void OnDisable()
     {
-        _ball.Died -= OnPlayerDeath;
+        _ball.Died -= DisableCanvasGroup;
+        _ball.FinishBlockHitted -= DisableCanvasGroup;
     }
 
-    private void OnPlayerDeath()
+    private void DisableCanvasGroup()
     {
         _canvasGroup.blocksRaycasts = false;
+        _stopDragging = true;
     }
 
     public void OnPointerDown(PointerEventData eventData)
@@ -47,6 +52,8 @@ public class Swipe : MonoBehaviour, IEndDragHandler, IDragHandler, IPointerDownH
 
     public void OnDrag(PointerEventData eventData)
     {
+        if (_stopDragging) return;
+
         if (Mathf.Abs(eventData.delta.y) > Mathf.Abs(eventData.delta.x) && _ball.IsFixed)
         {
             var pos = _ball.transform.position;
@@ -62,6 +69,8 @@ public class Swipe : MonoBehaviour, IEndDragHandler, IDragHandler, IPointerDownH
 
     public void OnEndDrag(PointerEventData eventData)
     {
+        if (_stopDragging) return;
+
         _ball.TryThrow(_pole.Curvature);
         _pole.ResetBend();
     }
