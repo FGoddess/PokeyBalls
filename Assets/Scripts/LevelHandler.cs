@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 public class LevelHandler : MonoBehaviour
 {
     [SerializeField] private Ball _ball;
-    private float _levelLoadDelay = 1f;
+    private float _levelLoadDelay = 2f;
 
     private CanvasGroup _canvasGroup;
 
@@ -33,11 +33,7 @@ public class LevelHandler : MonoBehaviour
         _canvasGroup.alpha = 1f;
         _canvasGroup.blocksRaycasts = true;
 
-        var playerLevel = PlayerPrefs.GetInt("PlayerLevel", 0);
-        PlayerPrefs.SetInt("PlayerLevel", ++playerLevel);
-
-        var towerId = PlayerPrefs.GetInt("TowerId", 0);
-        //PlayerPrefs.SetInt("TowerId", ++towerId);
+        SavesManager.Instance.SaveLevelData();
 
         StartCoroutine(LoadNextLevel());
     }
