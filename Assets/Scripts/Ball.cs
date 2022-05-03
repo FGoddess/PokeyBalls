@@ -83,4 +83,13 @@ public class Ball : MonoBehaviour
         _rigidbody.AddForce(Vector3.up * (_jumpForce + value * _jumpForceMultiplier), ForceMode.Impulse);
         _rigidbody.AddTorque(Vector3.right * (_jumpForce + value * _jumpForceMultiplier), ForceMode.Impulse);
     }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if(collision.collider.gameObject.TryGetComponent(out DeathPlatform platform))
+        {
+            _isDead = true;
+            Died?.Invoke();
+        }
+    }
 }
