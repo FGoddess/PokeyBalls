@@ -24,7 +24,7 @@ public class SavesManager : MonoBehaviour
         PlayerPrefs.SetInt("PlayerLevel", ++playerLevel);
 
         var towerId = PlayerPrefs.GetInt("TowerId", 0);
-        //PlayerPrefs.SetInt("TowerId", ++towerId);
+        PlayerPrefs.SetInt("TowerId", ++towerId);
     }
 
     public List<Block> GetTower(List<TowerData> towers)
@@ -32,6 +32,13 @@ public class SavesManager : MonoBehaviour
         if (PlayerPrefs.HasKey("TowerId"))
         {
             var id = PlayerPrefs.GetInt("TowerId");
+
+            if(id == towers.Count)
+            {
+                id = 0;
+                PlayerPrefs.SetInt("TowerId", id);
+            }
+
             return towers[id].Blocks;
         }
 
@@ -67,5 +74,16 @@ public class SavesManager : MonoBehaviour
     public void SetCoins(int value)
     {
         PlayerPrefs.SetInt("Coins", value);
+    }
+
+    public void DeleteEnvironmentKey()
+    {
+        PlayerPrefs.DeleteKey("EnvironmentId");
+    }
+
+    public int GetPlayerLevel()
+    {
+        var playerLevel = PlayerPrefs.GetInt("PlayerLevel", 0);
+        return playerLevel;
     }
 }
