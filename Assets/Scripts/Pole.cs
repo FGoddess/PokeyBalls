@@ -22,7 +22,6 @@ public class Pole : MonoBehaviour
     public void Activate()
     {
         gameObject.SetActive(true);
-        //TODO: animation
     }
 
     public void Hide(float delay)
