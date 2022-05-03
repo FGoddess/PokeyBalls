@@ -19,6 +19,8 @@ public class Swipe : MonoBehaviour, IEndDragHandler, IDragHandler, IPointerDownH
 
     private bool _stopDragging;
 
+    public event System.Action DragEnded;
+
     private void Awake()
     {
         _canvasGroup = GetComponent<CanvasGroup>();
@@ -27,13 +29,13 @@ public class Swipe : MonoBehaviour, IEndDragHandler, IDragHandler, IPointerDownH
     private void OnEnable()
     {
         _ball.Died += DisableCanvasGroup;
-        _ball.FinishBlockHitted += DisableCanvasGroup;
+        _ball.GameWon += DisableCanvasGroup;
     }
 
     private void OnDisable()
     {
         _ball.Died -= DisableCanvasGroup;
-        _ball.FinishBlockHitted -= DisableCanvasGroup;
+        _ball.GameWon -= DisableCanvasGroup;
     }
 
     private void DisableCanvasGroup()
@@ -73,5 +75,7 @@ public class Swipe : MonoBehaviour, IEndDragHandler, IDragHandler, IPointerDownH
 
         _ball.TryThrow(_pole.Curvature);
         _pole.ResetBend();
+
+        DragEnded?.Invoke();
     }
 }
