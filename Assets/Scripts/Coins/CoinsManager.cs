@@ -3,29 +3,36 @@ using UnityEngine;
 public class CoinsManager : MonoBehaviour
 {
     [SerializeField] private CoinsDisplay _coinsDisplay;
-    private int _coinsAmount;
+
+    public int CoinsAmount { get; private set; }
 
     private void Start()
     {
-        _coinsAmount = SavesManager.Instance.GetCoins();
+        CoinsAmount = SavesManager.Instance.GetCoins();
         UpdateCoins();
     }
 
     public void AddOneCoin()
     {
-        _coinsAmount++;
+        CoinsAmount++;
         UpdateCoins();
     }
 
     public void AddCoins(int value)
     {
-        _coinsAmount += value;
+        CoinsAmount += value;
+        UpdateCoins();
+    }
+
+    public void WithdrawCoins(int value)
+    {
+        CoinsAmount -= value;
         UpdateCoins();
     }
 
     private void UpdateCoins()
     {
-        _coinsDisplay.UpdateCoinsUI(_coinsAmount);
-        SavesManager.Instance.SetCoins(_coinsAmount);
+        _coinsDisplay.UpdateCoinsUI(CoinsAmount);
+        SavesManager.Instance.SetCoins(CoinsAmount);
     }
 }
