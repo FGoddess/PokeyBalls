@@ -1,11 +1,10 @@
-using System;
 using UnityEngine;
 
 [RequireComponent(typeof(Ball))]
 public class BallCollision : MonoBehaviour
 {
     [SerializeField] private CoinsManager _coinsManager;
-    [SerializeField] private Ball _ball;
+    private Ball _ball;
 
     private void Awake()
     {

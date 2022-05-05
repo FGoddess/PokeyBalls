@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody), typeof(MeshRenderer))]
+[RequireComponent(typeof(Rigidbody))]
 public class Ball : MonoBehaviour
 {
     [SerializeField] private Pole _pole;
@@ -9,7 +9,7 @@ public class Ball : MonoBehaviour
 
     [SerializeField] private ParticleSystem _deathParticle;
 
-    private MeshRenderer _meshRenderer;
+    [SerializeField] private MeshRenderer[] _meshRenderers;
 
     private float _poleHideDelay = 0.1f;
     private float _jumpForceMultiplier = 1.5f;
@@ -27,7 +27,6 @@ public class Ball : MonoBehaviour
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
-        _meshRenderer = GetComponent<MeshRenderer>();
     }
 
     public void TryFix()
@@ -99,7 +98,11 @@ public class Ball : MonoBehaviour
     {
         _deathParticle.Play();
         AudioPlayer.Instance.PlayDeathSFX();
-        _meshRenderer.enabled = false;
+        
+        foreach(var mesh in _meshRenderers)
+        {
+            mesh.enabled = false;
+        }
 
         _rigidbody.isKinematic = true;
         _isDead = true;
