@@ -5,7 +5,9 @@ using UnityEngine;
 public class DeathHandler : MonoBehaviour
 {
     [SerializeField] private Ball _ball;
-    private float _deathScreenDelay = 1.5f;
+
+    private float _deathScreenDelay = 1f;
+    private float _lerpDuration = 1f;
 
     private CanvasGroup _canvasGroup;
 
@@ -29,13 +31,24 @@ public class DeathHandler : MonoBehaviour
 
     private void OnPlayerDeath()
     {
-        StartCoroutine(ShowDeathScreen());
+        StartCoroutine(ShowDeathScreen(0f,1f));
     }
 
-    private IEnumerator ShowDeathScreen()
+    private IEnumerator ShowDeathScreen(float startValue, float endValue)
     {
-        yield return new WaitForSeconds(_deathScreenDelay);
-        _canvasGroup.alpha = 1f;
         _canvasGroup.blocksRaycasts = true;
+        yield return new WaitForSeconds(_deathScreenDelay);
+
+        float timeElapsed = 0;
+
+        while (timeElapsed < _lerpDuration)
+        {
+            _canvasGroup.alpha = Mathf.Lerp(startValue, endValue, timeElapsed / _lerpDuration);
+            timeElapsed += Time.deltaTime;
+
+            yield return null;
+        }
+
+        _canvasGroup.alpha = endValue;
     }
 }

@@ -6,7 +6,11 @@ using UnityEngine.SceneManagement;
 public class LevelHandler : MonoBehaviour
 {
     [SerializeField] private Ball _ball;
+
     private float _levelLoadDelay = 2f;
+    private float _particleDelay = 1f;
+
+    private float _lerpDuration = 1f;
 
     private CanvasGroup _canvasGroup;
 
@@ -30,14 +34,26 @@ public class LevelHandler : MonoBehaviour
 
     public void OnLevelComplete()
     {
-        _canvasGroup.alpha = 1f;
-        _canvasGroup.blocksRaycasts = true;
-
-        StartCoroutine(LoadNextLevel());
+        StartCoroutine(FadeIn(0f, 1f));
     }
 
-    private IEnumerator LoadNextLevel()
+    private IEnumerator FadeIn(float startValue, float endValue)
     {
+        _canvasGroup.blocksRaycasts = true;
+        yield return new WaitForSeconds(_particleDelay);
+
+        float timeElapsed = 0;
+
+        while (timeElapsed < _lerpDuration)
+        {
+            _canvasGroup.alpha = Mathf.Lerp(startValue, endValue, timeElapsed / _lerpDuration);
+            timeElapsed += Time.deltaTime;
+
+            yield return null;
+        }
+
+        _canvasGroup.alpha = endValue;
+
         yield return new WaitForSeconds(_levelLoadDelay);
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
