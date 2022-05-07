@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -8,6 +9,7 @@ public class Ball : MonoBehaviour
     [SerializeField] private float _jumpForce = 5f;
 
     [SerializeField] private ParticleSystem _deathParticle;
+    [SerializeField] private ParticleSystem _winParticle;
 
     [SerializeField] private MeshRenderer[] _meshRenderers;
 
@@ -61,17 +63,7 @@ public class Ball : MonoBehaviour
 
                     case BlockType.Finish:
                         {
-                            _rigidbody.isKinematic = true;
-                            GameWon?.Invoke();
-                            
-                            if (block.TryGetComponent(out Finish finish))
-                            {
-                                FinishBlockHitted?.Invoke(finish.GoldForHit);
-                            }
-
-                            AudioPlayer.Instance.PlayWinSFX();
-                            SavesManager.Instance.DeleteEnvironmentKey();
-
+                            Win(block);
                             break;
                         }
                 };
@@ -81,6 +73,21 @@ public class Ball : MonoBehaviour
                 _pole.Hide(_poleHideDelay);
             }
         }
+    }
+
+    private void Win(Block block)
+    {
+        _rigidbody.isKinematic = true;
+        _winParticle.Play();
+        GameWon?.Invoke();
+
+        if (block.TryGetComponent(out Finish finish))
+        {
+            FinishBlockHitted?.Invoke(finish.GoldForHit);
+        }
+
+        AudioPlayer.Instance.PlayWinSFX();
+        SavesManager.Instance.DeleteEnvironmentKey();
     }
 
     public void TryThrow(float value)
