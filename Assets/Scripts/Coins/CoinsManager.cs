@@ -6,6 +6,7 @@ public class CoinsManager : MonoBehaviour
 
     public int CoinsAmount { get; private set; }
 
+
     private void Start()
     {
         CoinsAmount = SavesManager.Instance.GetCoins();
