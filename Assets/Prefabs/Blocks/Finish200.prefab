@@ -123,7 +123,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b7876193c0744e46b0847e11ec282b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _goldForHit: 200
+  _goldForHit: 25
 --- !u!1 &5385340529615721157
 GameObject:
   m_ObjectHideFlags: 0

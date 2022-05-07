@@ -223,7 +223,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b7876193c0744e46b0847e11ec282b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _goldForHit: 400
+  _goldForHit: 75
 --- !u!1 &5880752927760595638
 GameObject:
   m_ObjectHideFlags: 0
