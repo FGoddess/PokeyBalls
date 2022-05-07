@@ -90,6 +90,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9bb6dcb6a89f114f8d4397a5de5a797, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _skin: {fileID: 0}
   <Image>k__BackingField: {fileID: 931989223081684483}
   <Button>k__BackingField: {fileID: 3769925464287139506}
   <ButtonText>k__BackingField: {fileID: 6406557977046172506}
@@ -283,9 +284,9 @@ MonoBehaviour:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
     m_FontSize: 14
     m_FontStyle: 1
-    m_BestFit: 0
+    m_BestFit: 1
     m_MinSize: 10
-    m_MaxSize: 40
+    m_MaxSize: 25
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
