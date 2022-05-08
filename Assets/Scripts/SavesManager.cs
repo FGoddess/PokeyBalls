@@ -24,7 +24,7 @@ public class SavesManager : MonoBehaviour
         PlayerPrefs.SetInt("PlayerLevel", ++playerLevel);
 
         var towerId = PlayerPrefs.GetInt("TowerId", 0);
-        PlayerPrefs.SetInt("TowerId", ++towerId);
+        //PlayerPrefs.SetInt("TowerId", ++towerId);
     }
 
     public List<Block> GetTower(List<TowerData> towers)
