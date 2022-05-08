@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -5,6 +6,9 @@ public class ShopItem : MonoBehaviour
 {
     [SerializeField] private PlayerSkin _skin;
     private Shop _shop;
+
+    private string _purchasedText;
+    private string _equippedText;
 
     [field: SerializeField]
     public Image Image { get; set; }
@@ -15,29 +19,41 @@ public class ShopItem : MonoBehaviour
     [field: SerializeField]
     public Text ButtonText { get; set; }
 
-    private void Awake()
+    public bool IsEquipped => _skin.IsEquppied;
+
+    public void Initialize(string language)
     {
         _shop = GetComponentInParent<Shop>();
+
+        _equippedText = language == "Russian" ? "Выбрано" : "Equipped";
+        _purchasedText = language == "Russian" ? "Выбрать" : "Equip";
+
+        _skin.CheckSaves();
     }
 
     public void Reload()
     {
-        if (_skin.IsEqupied)
+        if (_skin.IsEquppied)
         {
-            SkinActivator.Instance.SetSkin(_skin);
-            ButtonText.text = "Выбрано";
+            Equip();
             return;
         }
 
         if (_skin.IsPurchased)
         {
-            ButtonText.text = "Выбрать";
+            ButtonText.text = _purchasedText;
             Button.onClick.AddListener(() => SetSkin());
             return;
         }
 
         ButtonText.text = $"{_skin.Price}$";
         Button.onClick.AddListener(() => BuySkin());
+    }
+
+    public void Equip()
+    {
+        SkinActivator.Instance.SetSkin(_skin);
+        ButtonText.text = _equippedText;
     }
 
     private void SetSkin()
