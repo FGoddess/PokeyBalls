@@ -14,6 +14,8 @@ public class Ball : MonoBehaviour
     [SerializeField] private MeshRenderer[] _meshRenderers;
 
     private float _poleHideDelay = 0.1f;
+    private float _poleDamagableHideDelay = 0.01f;
+
     private float _jumpForceMultiplier = 1.5f;
     private bool _isDead;
 
@@ -56,7 +58,7 @@ public class Ball : MonoBehaviour
 
                     case BlockType.Damagable:
                         {
-                            _pole.Hide(_poleHideDelay);
+                            _pole.Hide(_poleDamagableHideDelay);
                             Die();
                             break;
                         }
@@ -75,13 +77,13 @@ public class Ball : MonoBehaviour
         }
     }
 
-    private void Win(Block block)
+    public void Win(Block block = null)
     {
         _rigidbody.isKinematic = true;
         _winParticle.Play();
         GameWon?.Invoke();
 
-        if (block.TryGetComponent(out Finish finish))
+        if (block != null && block.TryGetComponent(out Finish finish))
         {
             FinishBlockHitted?.Invoke(finish.GoldForHit);
         }

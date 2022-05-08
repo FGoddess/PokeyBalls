@@ -5,8 +5,6 @@ public class BlocksSpawner : MonoBehaviour
 {
     [SerializeField] private PlayerLevelUI _playerLevelUI;
 
-    private bool _isPlayerLevelInitialized;
-
     public void Initialize(List<Block> blocks)
     {
         GameObject obj = gameObject;
@@ -15,10 +13,9 @@ public class BlocksSpawner : MonoBehaviour
         {
             obj = CreateSegment(obj, block.gameObject);
 
-            if (block.BlockType == BlockType.Finish && !_isPlayerLevelInitialized)
+            if (block.GetComponentInChildren<FinishLine>() != null)
             {
                 _playerLevelUI.Initialize(obj.transform);
-                _isPlayerLevelInitialized = true;
             }
         }
     }
