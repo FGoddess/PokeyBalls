@@ -19,7 +19,7 @@ body {
 	display: flex;
     justify-content: center;
     align-items: center;
-	/*background: #3e4b4f;*/
+	background: #22445c;
 }
 #unity-canvas {
     width: 100%;
@@ -52,7 +52,7 @@ body {
     max-width: 80%;
 }
 #unity-progress-bar-empty {
-    width: 80%;
+    width: 20%;
     height: 24px;
     margin: 10px 20px 20px 10px;
     text-align: left;
