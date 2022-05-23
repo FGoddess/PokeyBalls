@@ -19,8 +19,9 @@ public class Pole : MonoBehaviour
         _bend.curvature = 0;
     }
 
-    public void Activate()
+    public void Activate(float yPos)
     {
+        transform.position = new Vector3(transform.position.x, yPos, transform.position.z);
         gameObject.SetActive(true);
     }
 

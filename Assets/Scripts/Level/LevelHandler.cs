@@ -7,7 +7,7 @@ public class LevelHandler : MonoBehaviour
 {
     [SerializeField] private Ball _ball;
 
-    private float _levelLoadDelay = 2f;
+    private float _levelLoadDelay = 3f;
     private float _particleDelay = 1f;
 
     private float _lerpDuration = 1f;
@@ -53,7 +53,7 @@ public class LevelHandler : MonoBehaviour
         }
 
         _canvasGroup.alpha = endValue;
-
+        AdsManager.Instance.TryShowInterstitialAd();
         yield return new WaitForSeconds(_levelLoadDelay);
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }

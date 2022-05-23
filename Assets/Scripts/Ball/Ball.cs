@@ -17,16 +17,15 @@ public class Ball : MonoBehaviour
     private float _poleDamagableHideDelay = 0.01f;
 
     private float _jumpForceMultiplier = 1.5f;
-    private bool _isDead;
 
     private Rigidbody _rigidbody;
 
     public event Action GameWon;
     public event Action<int> FinishBlockHitted;
     public event Action Died;
+    public event Action Revived;
 
     public bool IsFixed => _rigidbody.isKinematic;
-    public bool IsDead => _isDead;
 
     private void Awake()
     {
@@ -37,7 +36,7 @@ public class Ball : MonoBehaviour
     {
         if (Physics.Raycast(transform.position, Vector3.forward, out RaycastHit hit))
         {
-            _pole.Activate();
+            _pole.Activate(transform.position.y);
             _pole.transform.position = new Vector3(_pole.transform.position.x, transform.position.y, _pole.transform.position.z);
 
             if (hit.collider.TryGetComponent(out Block block))
@@ -81,6 +80,7 @@ public class Ball : MonoBehaviour
     {
         _rigidbody.isKinematic = true;
         _winParticle.Play();
+
         GameWon?.Invoke();
 
         if (block != null && block.TryGetComponent(out Finish finish))
@@ -99,6 +99,8 @@ public class Ball : MonoBehaviour
         _rigidbody.velocity = Vector3.zero;
         _rigidbody.isKinematic = false;
 
+        AudioPlayer.Instance.PlayThrowSFX();
+
         _rigidbody.AddForce(Vector3.up * (_jumpForce + value * _jumpForceMultiplier), ForceMode.Impulse);
         _rigidbody.AddTorque(Vector3.right * (_jumpForce + value * _jumpForceMultiplier), ForceMode.Impulse);
     }
@@ -107,15 +109,27 @@ public class Ball : MonoBehaviour
     {
         _deathParticle.Play();
         AudioPlayer.Instance.PlayDeathSFX();
-        
-        foreach(var mesh in _meshRenderers)
+
+        foreach (var mesh in _meshRenderers)
         {
             mesh.enabled = false;
         }
 
         _rigidbody.isKinematic = true;
-        _isDead = true;
 
         Died?.Invoke();
+    }
+
+    public void Revive()
+    {
+        transform.position = new Vector3(transform.position.x, CheckpointManager.Instance.CheckpointPosition.y, transform.position.z);
+        _pole.Activate(transform.position.y);
+
+        foreach(var mesh in _meshRenderers)
+        {
+            mesh.enabled = true;
+        }
+
+        Revived?.Invoke();
     }
 }

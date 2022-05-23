@@ -29,12 +29,14 @@ public class Swipe : MonoBehaviour, IEndDragHandler, IDragHandler, IPointerDownH
     private void OnEnable()
     {
         _ball.Died += DisableCanvasGroup;
+        _ball.Revived += EnableCanvasGroup;
         _ball.GameWon += DisableCanvasGroup;
     }
 
     private void OnDisable()
     {
         _ball.Died -= DisableCanvasGroup;
+        _ball.Revived -= EnableCanvasGroup;
         _ball.GameWon -= DisableCanvasGroup;
     }
 
@@ -42,6 +44,12 @@ public class Swipe : MonoBehaviour, IEndDragHandler, IDragHandler, IPointerDownH
     {
         _canvasGroup.blocksRaycasts = false;
         _stopDragging = true;
+    }
+
+    private void EnableCanvasGroup()
+    {
+        _canvasGroup.blocksRaycasts = true;
+        _stopDragging = false;
     }
 
     public void OnPointerDown(PointerEventData eventData)
