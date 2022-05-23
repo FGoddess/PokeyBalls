@@ -5,6 +5,9 @@ public class SavesManager : MonoBehaviour
 {
     public static SavesManager Instance { get; private set; }
 
+    private readonly string KEY_PLAYERLEVEL = "PlayerLevel";
+    private readonly string KEY_TOWERID = "TowerId";
+
     private void Awake()
     {
         if (Instance == null)
@@ -20,70 +23,95 @@ public class SavesManager : MonoBehaviour
 
     public void SaveLevelData()
     {
-        var playerLevel = PlayerPrefs.GetInt("PlayerLevel", 0);
-        PlayerPrefs.SetInt("PlayerLevel", ++playerLevel);
+        UpdateIntegerData(KEY_PLAYERLEVEL);
+        UpdateIntegerData(KEY_TOWERID);
+    }
 
-        var towerId = PlayerPrefs.GetInt("TowerId", 0);
-        //PlayerPrefs.SetInt("TowerId", ++towerId);
+    private static void UpdateIntegerData(string key)
+    {
+        if (PlayerPrefsExtension.HasKey(key))
+        {
+            var stringValue = PlayerPrefsExtension.GetString(key);
+            var intValue = int.Parse(stringValue);
+            ++intValue;
+            PlayerPrefsExtension.SetString(key, intValue.ToString());
+        }
+        else
+        {
+            PlayerPrefsExtension.SetString(key, "0");
+        }
     }
 
     public List<Block> GetTower(List<TowerData> towers)
     {
-        if (PlayerPrefs.HasKey("TowerId"))
+        if (PlayerPrefsExtension.HasKey("TowerId"))
         {
-            var id = PlayerPrefs.GetInt("TowerId");
+            var stringId = PlayerPrefsExtension.GetString("TowerId");
+            var id = int.Parse(stringId);
 
-            if(id == towers.Count)
+            if (id == towers.Count)
             {
                 id = 0;
-                PlayerPrefs.SetInt("TowerId", id);
+                PlayerPrefsExtension.SetString("TowerId", id.ToString());
             }
 
             return towers[id].Blocks;
         }
 
-        PlayerPrefs.SetInt("TowerId", 0);
+        PlayerPrefsExtension.SetString("TowerId", "0");
         return towers[0].Blocks;
     }
 
     public GameObject GetEnvironmentId(List<GameObject> levelEnvironment)
     {
-        if (PlayerPrefs.HasKey("EnvironmentId"))
+        if (PlayerPrefsExtension.HasKey("EnvironmentId"))
         {
-            var id = PlayerPrefs.GetInt("EnvironmentId");
+            var stringId = PlayerPrefsExtension.GetString("EnvironmentId");
+            var id = int.Parse(stringId);
+
             return levelEnvironment[id];
         }
 
         var randIndex = Random.Range(0, levelEnvironment.Count);
-        PlayerPrefs.SetInt("EnvironmentId", randIndex);
+        PlayerPrefsExtension.SetString("EnvironmentId", randIndex.ToString());
         return levelEnvironment[randIndex];
     }
 
     public int GetCoins()
     {
-        if (PlayerPrefs.HasKey("Coins"))
+        if (PlayerPrefsExtension.HasKey("Coins"))
         {
-            var coins = PlayerPrefs.GetInt("Coins");
+            var stringCoins = PlayerPrefsExtension.GetString("Coins");
+            var coins = int.Parse(stringCoins);
+
             return coins;
         }
 
-        PlayerPrefs.SetInt("Coins", 0);
+        PlayerPrefsExtension.SetString("Coins", "0");
         return 0;
     }
 
     public void SetCoins(int value)
     {
-        PlayerPrefs.SetInt("Coins", value);
+        PlayerPrefsExtension.SetString("Coins", value.ToString());
     }
 
     public void DeleteEnvironmentKey()
     {
-        PlayerPrefs.DeleteKey("EnvironmentId");
+        PlayerPrefsExtension.DeleteKey("EnvironmentId");
     }
 
     public int GetPlayerLevel()
     {
-        var playerLevel = PlayerPrefs.GetInt("PlayerLevel", 0);
-        return playerLevel;
+        if (PlayerPrefsExtension.HasKey(KEY_PLAYERLEVEL))
+        {
+            var stringValue = PlayerPrefsExtension.GetString(KEY_PLAYERLEVEL);
+            var playerLevel = int.Parse(stringValue);
+
+            return playerLevel;
+        }
+
+        PlayerPrefsExtension.SetString(KEY_PLAYERLEVEL, "0");
+        return 0;
     }
 }
