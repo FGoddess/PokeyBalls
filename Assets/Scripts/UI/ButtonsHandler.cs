@@ -3,15 +3,19 @@ using UnityEngine.SceneManagement;
 
 public class ButtonsHandler : MonoBehaviour
 {
-    [SerializeField] private Ball _player;
-
     public void ReloadScene()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
-
-    public void RevivePlayer()
+#if UNITY_EDITOR
+    private void Update()
     {
-        //_player.Revive();
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            SavesManager.Instance.SaveLevelData();
+            SavesManager.Instance.DeleteEnvironmentKey();
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
     }
+#endif
 }
