@@ -24,7 +24,7 @@ public class SkinActivator : MonoBehaviour
     public void SetSkin(PlayerSkin skin)
     {
         Debug.Log(skin.name);
-        _skins.ForEach(s => { s.gameObject.SetActive(false); s.UnEquip(); }) ;
+        _skins.ForEach(s => { s.gameObject.SetActive(false); s.UnEquip(); });
         var temp = _skins.FirstOrDefault(s => s == skin);
         temp.gameObject.SetActive(true);
         temp.Equip();
@@ -32,7 +32,7 @@ public class SkinActivator : MonoBehaviour
 
     public void TryBuySkin(PlayerSkin skin)
     {
-        if(_coinsManager.CoinsAmount >= skin.Price)
+        if (_coinsManager.CoinsAmount >= skin.Price)
         {
             _coinsManager.WithdrawCoins(skin.Price);
             _skins.ForEach(s => { s.gameObject.SetActive(false); s.UnEquip(); });

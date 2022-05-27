@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -125,7 +124,7 @@ public class Ball : MonoBehaviour
         transform.position = new Vector3(transform.position.x, CheckpointManager.Instance.CheckpointPosition.y, transform.position.z);
         _pole.Activate(transform.position.y);
 
-        foreach(var mesh in _meshRenderers)
+        foreach (var mesh in _meshRenderers)
         {
             mesh.enabled = true;
         }

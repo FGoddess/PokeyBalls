@@ -1,6 +1,3 @@
 using UnityEngine;
 
-public class DeathPlatform : MonoBehaviour
-{
-    
-}
+public class DeathPlatform : MonoBehaviour { }

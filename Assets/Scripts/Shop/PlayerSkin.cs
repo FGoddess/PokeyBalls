@@ -15,7 +15,7 @@ public class PlayerSkin : MonoBehaviour
     {
         IsEquppied = PlayerPrefsExtension.HasKey($"{name}IsEquipped");
 
-        if(!IsPurchased)
+        if (!IsPurchased)
         {
             IsPurchased = PlayerPrefsExtension.HasKey($"{name}IsPurchased");
         }

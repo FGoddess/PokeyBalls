@@ -34,7 +34,7 @@ public class PlayerLevelUI : MonoBehaviour
 
         _slider.value = _slider.maxValue - GetDistance(_ball.position.y, _finish.position.y);
 
-        if(_slider.value == _slider.maxValue)
+        if (_slider.value == _slider.maxValue)
         {
             OnFinishReached();
         }

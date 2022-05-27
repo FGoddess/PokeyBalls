@@ -9,7 +9,7 @@ public class BlocksSpawner : MonoBehaviour
     {
         GameObject obj = gameObject;
 
-        foreach(var block in blocks)
+        foreach (var block in blocks)
         {
             obj = CreateSegment(obj, block.gameObject);
 

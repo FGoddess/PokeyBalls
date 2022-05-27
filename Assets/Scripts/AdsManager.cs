@@ -16,8 +16,10 @@ public class AdsManager : MonoBehaviour
 
     private bool _needUnmute;
 
-    private readonly string KEY_MONEY = "300";
-    private readonly string KEY_REVIVE = "revive";
+    private const string KeyMoney = "300";
+    private const string KEY_REVIVE = "revive";
+
+    [SerializeField] private Text _debugText;
 
     private void Awake()
     {
@@ -43,38 +45,42 @@ public class AdsManager : MonoBehaviour
         _sdk.onRewardedAdClosed += TryUnmuteAudio;
         _sdk.onRewardedAdError += SdkNull;
 
+        _sdk.onLanguageGet += SetLanguage;
+
         _shopButton.onClick.AddListener(() => _sdk.ShowInterstitial());
         _reviveButton.onClick.AddListener(() => _sdk.ShowRewarded(KEY_REVIVE));
-        _addMoneyButton.onClick.AddListener(() => _sdk.ShowRewarded(KEY_MONEY));
+        _addMoneyButton.onClick.AddListener(() => _sdk.ShowRewarded(KeyMoney));
+    }
+
+    private void SetLanguage(string lang)
+    {
+        _debugText.text = lang;
     }
 
     private void TryUnmuteAudio(int value)
     {
-        if (_needUnmute)
-        {
-            _needUnmute = false;
-            AudioPlayer.Instance.Mute();
-        }
+        if (!_needUnmute) return;
+        _needUnmute = false;
+        AudioPlayer.Instance.Mute();
     }
 
     private void TryMuteAudio(int value)
     {
-        if (!AudioPlayer.Instance.IsMuted)
-        {
-            _needUnmute = true;
-            AudioPlayer.Instance.Mute();
-        }
+        if (AudioPlayer.Instance.IsMuted) return;
+        _needUnmute = true;
+        AudioPlayer.Instance.Mute();
     }
 
     private void RevivePlayer(string str)
     {
-        if (str == KEY_REVIVE)
+        switch (str)
         {
-            _player.Revive();
-        }
-        else if (str == KEY_MONEY)
-        {
-            _coinsManager.AddCoins(int.Parse(KEY_MONEY));
+            case KEY_REVIVE:
+                _player.Revive();
+                break;
+            case KeyMoney:
+                _coinsManager.AddCoins(int.Parse(KeyMoney));
+                break;
         }
     }
 
@@ -83,13 +89,7 @@ public class AdsManager : MonoBehaviour
         _sdk.ShowInterstitial();
     }
 
-    private void SdkNull(string obj)
-    {
+    private void SdkNull(string obj) { }
 
-    }
-
-    private void SdkNull()
-    {
-
-    }
+    private void SdkNull() { }
 }
