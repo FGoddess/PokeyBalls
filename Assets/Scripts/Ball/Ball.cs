@@ -24,7 +24,8 @@ public class Ball : MonoBehaviour
     public event Action Died;
     public event Action Revived;
 
-    public bool IsFixed => _rigidbody.isKinematic;
+    public bool IsFixed => _isFixed;
+    private bool _isFixed;
 
     private void Awake()
     {
@@ -35,8 +36,7 @@ public class Ball : MonoBehaviour
     {
         if (Physics.Raycast(transform.position, Vector3.forward, out RaycastHit hit))
         {
-            _pole.Activate(transform.position.y);
-            _pole.transform.position = new Vector3(_pole.transform.position.x, transform.position.y, _pole.transform.position.z);
+            SetPolePosition();
 
             if (hit.collider.TryGetComponent(out Block block))
             {
@@ -45,18 +45,21 @@ public class Ball : MonoBehaviour
                     case BlockType.Fixable:
                         {
                             _rigidbody.isKinematic = true;
+                            _isFixed = true;
                             break;
                         }
 
                     case BlockType.Unfixable:
                         {
                             _pole.Hide(_poleHideDelay);
+                            _isFixed = false;
                             break;
                         }
 
                     case BlockType.Damagable:
                         {
                             _pole.Hide(_poleDamagableHideDelay);
+                            _isFixed = false;
                             Die();
                             break;
                         }
@@ -64,15 +67,31 @@ public class Ball : MonoBehaviour
                     case BlockType.Finish:
                         {
                             Win(block);
+                            _isFixed = false;
                             break;
                         }
                 };
             }
             else
             {
+                SetPolePosition();
+                _isFixed = false;
                 _pole.Hide(_poleHideDelay);
             }
         }
+        else
+        {
+            SetPolePosition();
+            _isFixed = false;
+            _pole.Hide(_poleHideDelay);
+        }
+    }
+
+    private void SetPolePosition()
+    {
+        _pole.Activate(transform.position.y);
+        _pole.transform.position =
+            new Vector3(_pole.transform.position.x, transform.position.y, _pole.transform.position.z);
     }
 
     public void Win(Block block = null)
@@ -93,7 +112,7 @@ public class Ball : MonoBehaviour
 
     public void TryThrow(float value)
     {
-        if (!IsFixed) return;
+        if (!_isFixed) return;
 
         _rigidbody.velocity = Vector3.zero;
         _rigidbody.isKinematic = false;

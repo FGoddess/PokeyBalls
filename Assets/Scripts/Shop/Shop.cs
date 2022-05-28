@@ -1,17 +1,15 @@
-using Lean.Localization;
 using UnityEngine;
+using YG;
 
 public class Shop : MonoBehaviour
 {
     [SerializeField] private ShopItem[] _items;
 
-    [SerializeField] private LeanLocalization _localization;
-
     private void Start()
     {
         foreach (var item in _items)
         {
-            item.Initialize(_localization.CurrentLanguage);
+            item.Initialize();
         }
 
         UpdateItems();

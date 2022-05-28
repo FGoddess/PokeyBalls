@@ -20,12 +20,12 @@ public class ShopItem : MonoBehaviour
 
     public bool IsEquipped => _skin.IsEquppied;
 
-    public void Initialize(string language)
+    public void Initialize()
     {
         _shop = GetComponentInParent<Shop>();
 
-        _equippedText = language == "Russian" ? "Выбрано" : "Equipped";
-        _purchasedText = language == "Russian" ? "Выбрать" : "Equip";
+        _equippedText = "X";
+        _purchasedText = "X";
 
         _skin.CheckSaves();
     }
@@ -35,17 +35,20 @@ public class ShopItem : MonoBehaviour
         if (_skin.IsEquppied)
         {
             Equip();
+            ButtonText.color = Color.green;
             return;
         }
 
         if (_skin.IsPurchased)
         {
             ButtonText.text = _purchasedText;
+            ButtonText.color = Color.grey;
             Button.onClick.AddListener(() => SetSkin());
             return;
         }
 
         ButtonText.text = $"{_skin.Price}$";
+        ButtonText.color = Color.white;
         Button.onClick.AddListener(() => BuySkin());
     }
 
