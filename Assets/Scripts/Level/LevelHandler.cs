@@ -53,7 +53,6 @@ public class LevelHandler : MonoBehaviour
         }
 
         _canvasGroup.alpha = endValue;
-        AdsManager.Instance.TryShowInterstitialAd();
         yield return new WaitForSeconds(_levelLoadDelay);
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }

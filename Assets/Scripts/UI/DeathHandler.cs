@@ -58,7 +58,6 @@ public class DeathHandler : MonoBehaviour
             yield return null;
         }
 
-        AdsManager.Instance.TryShowInterstitialAd();
         _canvasGroup.alpha = endValue;
         _canvasGroup.interactable = true;
     }

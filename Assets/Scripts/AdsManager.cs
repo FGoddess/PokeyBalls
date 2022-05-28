@@ -1,10 +1,10 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
+using YG;
 
 public class AdsManager : MonoBehaviour
 {
-    public static AdsManager Instance { get; private set; }
-
     [SerializeField] private Ball _player;
     [SerializeField] private CoinsManager _coinsManager;
 
@@ -12,49 +12,24 @@ public class AdsManager : MonoBehaviour
     [SerializeField] private Button _reviveButton;
     [SerializeField] private Button _addMoneyButton;
 
-    private YandexSDK _sdk;
-
     private bool _needUnmute;
 
-    private const string KeyMoney = "300";
-    private const string KEY_REVIVE = "revive";
-
-    [SerializeField] private Text _debugText;
-
-    private void Awake()
-    {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-    }
+    private int _moneyReward = 300;
 
     private void Start()
     {
-        _sdk = YandexSDK.instance;
-
-        _sdk.onInterstitialShown += SdkNull;
-        _sdk.onInterstitialFailed += SdkNull;
-
-        _sdk.onRewardedAdReward += RevivePlayer;
-        _sdk.onRewardedAdOpened += TryMuteAudio;
-        _sdk.onRewardedAdClosed += TryUnmuteAudio;
-        _sdk.onRewardedAdError += SdkNull;
-
-        _sdk.onLanguageGet += SetLanguage;
-
-        _shopButton.onClick.AddListener(() => _sdk.ShowInterstitial());
-        _reviveButton.onClick.AddListener(() => _sdk.ShowRewarded(KEY_REVIVE));
-        _addMoneyButton.onClick.AddListener(() => _sdk.ShowRewarded(KeyMoney));
+        //_reviveButton.onClick.AddListener(() => YandexGame.vid .ShowRewarded(KEY_REVIVE));
+        //_addMoneyButton.onClick.AddListener(() => _sdk.ShowRewarded(KeyMoney));
     }
 
-    private void SetLanguage(string lang)
+    private void OnEnable()
     {
-        _debugText.text = lang;
+        YandexGame.CloseVideoEvent += VideoReward;
+    }
+    
+    private void OnDisable()
+    {
+        YandexGame.CloseVideoEvent -= VideoReward;
     }
 
     private void TryUnmuteAudio(int value)
@@ -71,25 +46,16 @@ public class AdsManager : MonoBehaviour
         AudioPlayer.Instance.Mute();
     }
 
-    private void RevivePlayer(string str)
+    private void VideoReward(int id)
     {
-        switch (str)
+        switch (id)
         {
-            case KEY_REVIVE:
+            case 1:
                 _player.Revive();
                 break;
-            case KeyMoney:
-                _coinsManager.AddCoins(int.Parse(KeyMoney));
+            case 2:
+                _coinsManager.AddCoins(_moneyReward);
                 break;
         }
     }
-
-    public void TryShowInterstitialAd()
-    {
-        _sdk.ShowInterstitial();
-    }
-
-    private void SdkNull(string obj) { }
-
-    private void SdkNull() { }
 }
